@@ -1,0 +1,8 @@
+{
+    "access_token": "Lwdov39MJBRArpvf40bHClWsw-fg6MbWeHaPoQc3z_0IKgLEDJEzg0DD8fGxMqwqtZ4XyI7ojnQYYWWdASyqmewYK08-hiVNliT8_iUajcDbJRxwKtwGG2tYw0UdQet5C08cgOHWMJaf7t2PWc1EfmwyWrv-n9glq5VB7gflP4Rq1BupjQrvB5U_Hx7OYMsIr4bGBfL5tFset5rZ4DcJZKzh-dy7_FsYYhdzUL3JOQaH-BTuZqlgfmBXtzK0KtpQ6ftFU68ykWGZ_5n-6rK2HjgTqfeho3kRdv4YViwXHFiyXUcbAtrwGQPJ7buN0ZAN3rYL8L7cGWZXvVxaVatoWdRL2-qvM3R48KGyb0KAJQf2mIyFTwwdHgL5Q0HaMp7as435Xv_vyxsqvZWSfVlALrEhwrRXeWebHJM3u4xB8izBSAust18e2LYbcjKPcPJyMxaarPNSNRZh0n9Qo4jXyZQYWDdSUqQG520ALG4lOKJOLCcENgmTLvmijIkoB7X3",
+    "token_type": "bearer",
+    "expires_in": 1209599,
+    "userName": "alex@gmail.com",
+    ".issued": "Tue, 26 May 2020 03:24:49 GMT",
+    ".expires": "Tue, 09 Jun 2020 03:24:49 GMT"
+}
