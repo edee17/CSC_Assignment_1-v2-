@@ -8,3 +8,6 @@ All of the codes can be found [HERE](https://github.com/edee17/CSC_Assignment_1-
 
 ## Documentation
 The documentation can be found here.
+
+## Postman Images
+The images of Postman testing can be found here.
