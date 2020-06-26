@@ -1,5 +1,5 @@
-var clarifaiApiKey = '2e62e2045bf44cfaa2fae0d4db2487c1';
-var workflowId = 'my-task8workflow-1';
+var clarifaiApiKey = 'Your Key';
+var workflowId = 'Your ID';
 
 var app = new Clarifai.App({
   apiKey: clarifaiApiKey
