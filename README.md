@@ -11,3 +11,6 @@ The documentation can be found here.
 
 ## Postman Images
 The images of Postman testing and other Screenshots can be found here.
+
+## Diagrams
+The Diagrams can be found here.
