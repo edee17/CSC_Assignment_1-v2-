@@ -20,7 +20,7 @@ public partial class WeatherServiceForm : System.Web.UI.Page
 
         url.Host = "api.worldweatheronline.com";
         url.Path = "premium/v1/weather.ashx";
-        url.Query = "q=singapore&format=xml&num_of_days=5&key=88f25c4d6bb24001abe30632200505";
+        url.Query = "q=singapore&format=xml&num_of_days=5&key=Your Key";
 
         //Make a HTTP request to the global weather web service
         wsResponseXmlDoc = MakeRequest(url.ToString());
