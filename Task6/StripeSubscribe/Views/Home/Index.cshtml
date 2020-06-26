@@ -1,0 +1,278 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@using Microsoft.Extensions.Options
+@inject IOptions<StripeSubscribe.Data.StripeSettings> Stripe
+
+<div class="header">
+        <h2>Customer Subscription</h2>
+        <button id="addLink" name="addLink" data-toggle="modal" data-target="#addModal" value="">Add Customer</button>
+</div>
+<div class="container">
+    <div class="row">
+        <div id="customerInfoGather" class="col-md-3">
+            <form>
+                <label>Email</label>
+                <input type="text" width="300" id="email" class="form-control" name="inEmail" value="" placeholder="Email" />
+                <input type="button" id="submitBtn" value="Submit" class="btn btn-primary" />
+            </form>
+        </div>
+    </div>
+</div>
+
+<table id="subscriptionTable" class="border-dark">
+    <thead>
+        <tr>
+            <td id="columnHead">
+                No.
+            </td>
+            <td id="columnHead">
+                Name
+            </td>
+            <td>
+
+            </td>
+            <td id="columnHead">
+                Plan Id
+            </td>
+            <td>
+
+            </td>
+        </tr>
+    </thead>
+    <tbody id="subscriptionBody">
+    </tbody>
+</table>
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border:unset;">
+            <div class="modal-header" id="modalHeader">
+                <h4 class="modal-title" id="addModalLabel">Add Customer</h4>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <form asp-controller="Payment" asp-action="Subscribe" method="post" id="payment-form" style="width:100%;">
+                    <div class="container">
+                        <div class="form-row">
+                            <label for="card-element">
+                                Credit or debit card
+                            </label>
+                            <div id="card-element" style="width:100%;">
+                                <!-- A Stripe Element will be inserted here. -->
+                            </div>
+
+                            <!-- Used to display form errors. -->
+                            <div id="card-errors" role="alert"></div>
+                        </div>
+                        <div class="form-row">
+                            <label for="email">
+                                Email
+                            </label>
+                            <div style="width:100%;">
+                                <input name="cardEmail" id="cardEmail" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="plan">
+                                Plan
+                            </label>
+                            <div style="width:100%;">
+                                <input type="radio" name="plan" id="planMonthly" value="Daily5" /><label for="planMonthly">Monthly</label><br />
+                                <input type="radio" name="plan" id="planYearly" value="Daily10" /><label for="planYearly">Yearly</label>
+                            </div>
+                        </div>
+                        <button>Make Subscription</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border:unset;">
+            <div class="modal-header" id="modalHeader">
+                <h4 class="modal-title" id="updateModalLabel">Update Subscription</h4>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <form asp-controller="Payment" asp-action="Upgrade" method="post" id="upgrade-form" style="width:100%;">
+                    <div class="container">
+                        <input type="hidden" name="subKey" id="subKey" value="" />
+                        <div class="form-row">
+                            <label for="plan">
+                                Plan
+                            </label>
+                            <div style="width:100%;">
+                                <input type="radio" name="plan" id="planMonthly" value="Daily5" /><label for="planMonthly">Monthly</label><br />
+                                <input type="radio" name="plan" id="planYearly" value="Daily10" /><label for="planYearly">Yearly</label>
+                            </div>
+                        </div>
+                        <button id="updateBtn">Update Subscription</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <style>
+        #columnHead {
+            width: 100px;
+        }
+    </style>
+
+    <script>
+        // Create a Stripe client and use the Viewbag to get your Stripe API key.
+        var stripe = Stripe('@Stripe.Value.PublishableKey');
+
+        // Create an instance of Elements.
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        // (Note that this demo uses a wider set of styles than the guide below.)
+        var style = {
+        base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+            color: '#aab7c4'
+            }
+        },
+        invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+        }
+        };
+
+        // Create an instance of the card Element.
+        var card = elements.create('card', {style: style});
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+        // Handle real-time validation errors from the card Element.
+        card.addEventListener('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission.
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                // Inform the user if there was an error.
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+                } else {
+                // Send the token to your server.
+                stripeTokenHandler(result.token);
+                }
+            });
+        });
+
+        // Submit the form with the token ID.
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Submit the form
+            form.submit();
+        }
+
+        $(function () {
+            $('#submitBtn').on('click', function () {
+                var email = $('#email').val();
+                LoadCustomerID(email);
+            })
+        })
+        $(function () {
+            $('#subscriptionBody').on('click', '#editLink', function () {
+                var id = $(this).val();
+                $('#subKey').val($(this).val());
+            });
+        })
+        $(function () {
+            $('#updateModal').on('click', '#updateBtn', function () {
+                setTimeout(function () {
+                    location.reload();
+                }, 2000);
+            });
+        })
+
+
+        function LoadCustomerID(inEmail) {
+                function EmailCollector(intoEmail) {
+                    this.email = intoEmail;
+                }
+                emailCll = new EmailCollector(inEmail);
+            $.ajax({
+                type: 'POST',
+                url: `/API/Customers/GetByEmail`,
+                async: true,
+                dataType: 'Json',
+                data: emailCll
+            }).done(function (data) {
+                console.dir(data.customerID);
+                let $childElement = $(`<p>Customer ID: ${data.customerID}</p>`);
+                $('#customerInfoGather').append($childElement);
+                LoadSubcriptionTable(data.customerID);
+                $('#custID').val(data.customerID);
+            }).fail(function (data) {
+                console.dir(data);
+                $('#subscriptionBody').append($(`<tr colspan="3"><td><h4>No records found.</h4></td><td></td><td></td><td></td><td></td></tr>`));
+            })
+        }
+        function LoadSubcriptionTable(custId) {
+            $.ajax({
+                type: 'GET',
+                url: `/API/Subscriptions/${custId}`,
+                async: true,
+                dataType: 'Json'
+            }).done(function (data) {
+                $('#subscriptionBody').html('');
+                console.dir(data);
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+
+                        let record = data[i];
+                        console.dir(record.subNo);
+                        console.dir(record.subId);
+                        let $cellElement = null;
+                        let $rowElement = $(`<tr></tr>`);
+
+                        $cellElement = $(`<td>${i + 1}</td>`);
+                        $rowElement.append($cellElement);
+                        $cellElement = $(`<td>${record.subId}</td>`);
+                        $rowElement.append($cellElement);
+                        $cellElement = $(`<td></td>`);
+                        $rowElement.append($cellElement);
+                        $cellElement = $(`<td>${record.planId}</td>`);
+                        $rowElement.append($cellElement);
+                        $cellElement = $(`<button id=\"editLink\" name=\"editLink${record.subId}\" data-toggle=\"modal\" data-target=\"#updateModal\" value=\"${record.subId}\" style="background-color:white; padding: 0; margin: 0" class="button">Update</button>`)
+                        $rowElement.append($cellElement);
+                        $('#subscriptionBody').append($rowElement);
+                    }
+                } else {
+                    $('#subscriptionBody').append($(`<tr><td><h4>No records found.</h4></td><td></td><td></td><td></td><td></td></tr>`));
+                }
+                
+            }).fail(function () {
+                $('#subscriptionBody').append($(`<tr><td><h4>No records found.</h4></td><td></td><td></td><td></td><td></td></tr>`));
+            })
+        }
+    </script>
+}
