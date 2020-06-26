@@ -15,4 +15,6 @@ The images of Postman testing and other Screenshots can be found [HERE](https://
 ## Diagrams
 The Diagrams can be found [HERE](https://github.com/edee17/CSC_Assignment_1-v2-/tree/master/Diagrams).
 
-***Extra Feature (Text-To-Speech) source code files are too big and unable to upload to Github as Github has a 100mb size limit for uploads***
+## Task 7 & Extra Feature (Text-To-Speech)
+***Task 7 does not requires any Source Codes, Screenshots of the work can be seen in either [Screenshot](https://github.com/edee17/CSC_Assignment_1-v2-/tree/master/Screenshots) folder or [Documentation](https://github.com/edee17/CSC_Assignment_1-v2-/blob/master/Documentation.pdf)***
+***Extra Feature (Text-To-Speech) Source Codes files are too big and unable to upload to Github as Github has a 100mb size limit for uploads. Screenshots of the work can be seen in either [Screenshot]() or [Documentation]()***
